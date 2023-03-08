@@ -5,6 +5,8 @@ from passlib.hash import scram
 from memo_mingle.db.orm_config import Base
 from memo_mingle.db.models.summarys_table import SummaryModel
 
+# TODO: Add a login manager with Flask
+
 class UserModel(Base):
     __tablename__ = 'users'
 

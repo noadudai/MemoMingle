@@ -15,3 +15,6 @@ class SummaryModel(Base):
 
     topic = relationship('TopicModel', back_populates='summarys')
     user = relationship('UserModel', back_populates='summarys')
+
+# TODO: add a PhotoModel table and associate a filename/url Column to the SummaryModel, 
+# then create a file storage service (s3) that the photo will be saved there.
