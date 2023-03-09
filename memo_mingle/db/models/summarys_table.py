@@ -8,7 +8,7 @@ class SummaryModel(Base):
     __tablename__ = 'summarys'
 
     id = Column(Integer, primary_key=True, nullable=False)
-    title = Column(String(50))
+    title = Column(String(50), unique=True)
     content = Column(String)
     topic_id = Column(Integer, ForeignKey('topics.id'))
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
