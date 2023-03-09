@@ -133,4 +133,4 @@ dmypy.json
 .vscode/
 *.json
 docker-compose.yml
-config.ini
+*.ini
