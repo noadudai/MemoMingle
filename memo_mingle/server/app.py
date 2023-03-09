@@ -1,11 +1,13 @@
+from flask import Flask, request, jsonify, render_template, url_for, redirect
+from flask_login import login_user, LoginManager, login_required, logout_user, current_user
+import json
+import configparser
+import os
+from passlib.hash import scram
+
 from memo_mingle.db.models.user_table import UserModel
 from memo_mingle.db.orm_config import Session, Base, engine
 
-from flask import Flask, request, jsonify, render_template
-import json
-
-# TODO: Add a login manager with Flask
-# TODO: Add a LogIn rout Flask function that loges in the user if the user is in the DB. Use the @login_required in every Flask function after login.
 # TODO: Add a CreateSummary rout Flask function that will use the @login_required to get the userID, then receive the info from thee post request and save to BD, the photo field is optional.
 # TODO: Add a "EditSummary" option that will allow a user to edit a Summary (only a Summary that the user created, not a Summary that was created by a different user) via the Summary name.
 # TODO: Add a "DeleteSummary" option Flask function that will allow a user to delete a Summary (only a Summary that the user created, not a Summary that was created by a different user) via the Summary name.
@@ -13,11 +15,25 @@ import json
 # TODO: Add a "Follow" option to a Topic, that the users that "follow" that Topic can receive an update each time a new Summary was added to that Topic, and "<some num> new Summaries" from the last time the user saw the Summaries of that Topic.
 # TODO: Add a "ViewProfile" functionality that will allow users to see other users profile.
 # TODO: Add a "ProfilePage" option that will show all the Summaries that user submitted with each it's relevent Topic, and that user's email address so that other users can contact that user via email.
-# TODO: Add a "SignOut" option that will use the @login_required to get the userID, then sign that user out.
 
 app = Flask(__name__)
 
-# TODO: Add a CreateAccount rout Flask function that saves the created user to the DB, and return "Signed up successfully!" or "User already signed in." 
+config_file = os.path.join(os.path.dirname(__file__), 'config1.ini')
+config = configparser.ConfigParser()
+config.read(config_file)
+
+app.config['SECRET_KEY'] = config['secret_key']['key']
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+@login_manager.user_loader
+def load_user(user_id):
+    with Session() as session:
+        return session.query(UserModel).filter_by(id=int(user_id)).one()
+
+
 @app.route('/sign_up', methods=['POST'])
 def sign_up():
     with Session() as session:
@@ -36,9 +52,50 @@ def sign_up():
             session.commit()
             # message = SuccessMessage("Signed up successfully!")
             # return json.dumps(message.to_dict())
+            # return redirect(url_for('login'))
             return jsonify("succsses")
 
 
+@app.route("/login", methods=['POST'])
+def login():
+    with Session() as session:
+        email = request.form['email']
+        password = request.form['password']
+
+        if session.query(session.query(UserModel).filter_by(email=email).exists()).scalar():
+            user = get_user(email, session)
+            if scram.verify(password, user.passward):
+                login_user(user, force=True)
+                # return redirect(url_for('home'))
+                return jsonify("succsses")
+            else:
+                # message = FailedMessage("Failed to login, password is incorrect")
+                # return json.dumps(message.to_dict())
+                return jsonify("Failed to login, password is incorrect")
+        else:
+            # message = FailedMessage("Failed to login, email is incorrect")
+            # return json.dumps(message.to_dict())
+            return jsonify("Failed to login, email is incorrect")
+
+
+@app.route("/logout", methods=['GET', 'POST'])
+@login_required
+def logout():
+    logout_user()
+    # return redirect(url_for('login'))
+    return jsonify("succssesfully loged out")
+
+
+# -----------Utility functions-----------
+def get_user(email, session) -> UserModel:
+    try:
+        return session.query(UserModel).filter_by(email=email).one()
+    except Exception as e:
+        print(f"User do not exist: {repr(e)}")
+        raise Exception("There is no user with this email.")
+
+
+# The following is a test to see all the users in the DB
 @app.route('/show_all_users', methods=["GET", "POST"])
 def show_all_users():
     with Session() as session:
@@ -47,12 +104,10 @@ def show_all_users():
         return_str = str(return_list)
         return jsonify(return_str)
 
+
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
     app.run()
-
-
-
 
 
 
@@ -83,3 +138,9 @@ if __name__ == '__main__':
 #     create_user("somename", "somelastname", "sfdrg@fds", "12345")
 
 #     print_users()
+
+# DONE:
+# TODO: Add a CreateAccount rout Flask function that saves the created user to the DB, and return "Signed up successfully!" or "User already signed in." 
+# TODO: Add a login manager with Flask
+# TODO: Add a LogIn rout Flask function that loges in the user if the user is in the DB. Use the @login_required in every Flask function after login.
+# TODO: Add a "SignOut" option that will use the @login_required to get the userID, then sign that user out.
