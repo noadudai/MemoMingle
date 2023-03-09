@@ -12,3 +12,4 @@ class TopicModel(Base):
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
     summarys = relationship('SummaryModel', uselist=True, back_populates='topic')
+    user = relationship('UserModel', back_populates='topics')

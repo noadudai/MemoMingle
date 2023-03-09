@@ -13,11 +13,11 @@ class UserModel(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
-    email = Column(String, nullable=False)
-    passward = Column(String, nullable=False)
+    email = Column(String, nullable=False, unique=True)
+    passward = Column(String, nullable=False, unique=True)
 
     summarys = relationship('SummaryModel', uselist=True, back_populates='user')
-
+    topics = relationship('TopicModel', uselist=True, back_populates='user')
 
     def __init__(self, name, last_name, email, password):
         self.name = name

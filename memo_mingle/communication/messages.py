@@ -1,0 +1,1 @@
+# TODO: Add Message abstruct class so there will be messages classes to the app.
