@@ -6,9 +6,10 @@ import os
 from passlib.hash import scram
 
 from memo_mingle.db.models.user_table import UserModel
+from memo_mingle.db.models.summarys_table import SummaryModel
+from memo_mingle.db.models.topics_table import TopicModel
 from memo_mingle.db.orm_config import Session, Base, engine
 
-# TODO: Add a CreateSummary rout Flask function that will use the @login_required to get the userID, then receive the info from thee post request and save to BD, the photo field is optional.
 # TODO: Add a "EditSummary" option that will allow a user to edit a Summary (only a Summary that the user created, not a Summary that was created by a different user) via the Summary name.
 # TODO: Add a "DeleteSummary" option Flask function that will allow a user to delete a Summary (only a Summary that the user created, not a Summary that was created by a different user) via the Summary name.
 # TODO: Add a "Liked" option to Summaries, that each user can "like" that Summary, and show how many "likes" that Summary received.
@@ -45,7 +46,7 @@ def sign_up():
         if session.query(session.query(UserModel).filter_by(email=email).exists()).scalar():
             # message = FailedMessage("User already signed in.")
             # return json.dumps(message.to_dict())
-            return jsonify("already sighned up")
+            return jsonify("already signed up")
         else:
             user_model = UserModel(name, last_name, email, password)
             session.add(user_model)
@@ -64,7 +65,7 @@ def login():
 
         if session.query(session.query(UserModel).filter_by(email=email).exists()).scalar():
             user = get_user(email, session)
-            if scram.verify(password, user.passward):
+            if scram.verify(password, user.password):
                 login_user(user, force=True)
                 # return redirect(url_for('home'))
                 return jsonify("succsses")
@@ -86,6 +87,45 @@ def logout():
     return jsonify("succssesfully loged out")
 
 
+# TODO: Add a CreateSummary rout Flask function that will use the @login_required to get the userID, then receive the info from thee post request and save to BD, the photo field is optional.
+@app.route("/create_summary", methods=['POST'])
+@login_required
+def create_summary():
+    with Session() as session:
+        summary_name = request.form['summary name']
+        topic_name = request.form['topic name']
+        summary = request.form['summary']
+
+        topic = get_topic(topic_name, session)
+
+        if topic:
+            new_summary = SummaryModel(summary_name, summary, topic.id, current_user.id)
+            session.add(new_summary)
+            session.commit()
+            return jsonify(f"Created new summary under {topic_name} with title {summary_name}.")
+        else:
+            # return redirect(url_for('create_topic'))
+            return jsonify(f"There is no Topic with name {topic_name}, please create one if you want to create your summary.")
+
+
+@app.route("/create_topic", methods=['POST'])
+@login_required
+def create_topic():
+    with Session() as session:
+        topic_name = request.form['topic name']
+        topic = get_topic(topic_name, session)
+
+        if topic:
+            # return redirect(url_for('create_topic'))
+            return jsonify(f"There is a Topic with this name {topic_name}")
+        else:
+            new_topic = TopicModel(topic_name, current_user.id)
+            session.add(new_topic)
+            session.commit()
+            # return redirect(url_for('create_topic'))
+            return jsonify(f"Created new Topic: {topic_name}.")
+
+
 # -----------Utility functions-----------
 def get_user(email, session) -> UserModel:
     try:
@@ -95,6 +135,14 @@ def get_user(email, session) -> UserModel:
         raise Exception("There is no user with this email.")
 
 
+def get_topic(topic_name: str, seesion) -> TopicModel:
+    try:
+        return seesion.query(TopicModel).filter_by(name=topic_name).first()
+    except Exception as e:
+        print(f"Topic does not exist: {repr(e)}")
+        raise Exception("There is no Topic with this name.")
+
+    
 # The following is a test to see all the users in the DB
 @app.route('/show_all_users', methods=["GET", "POST"])
 def show_all_users():
@@ -104,7 +152,22 @@ def show_all_users():
         return_str = str(return_list)
         return jsonify(return_str)
 
+@app.route('/show_all_topics', methods=["GET", "POST"])
+def show_all_topics():
+    with Session() as session:
+        topics = session.query(TopicModel).all()
+        return_list = [str(topic) for topic in topics]
+        return_str = str(return_list)
+        return jsonify(return_str)
 
+@app.route('/show_all_summaries', methods=["GET", "POST"])
+def show_all_summaries():
+    with Session() as session:
+        summaries = session.query(SummaryModel).all()
+        return_list = [str(summary) for summary in summaries]
+        return_str = str(return_list)
+        return jsonify(return_str)
+    
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
     app.run()
