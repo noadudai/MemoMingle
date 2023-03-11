@@ -15,7 +15,7 @@ class UserModel(Base, UserMixin):
     name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
-    passward = Column(String, nullable=False, unique=True)
+    password = Column(String, nullable=False, unique=True)
 
     summarys = relationship('SummaryModel', uselist=True, back_populates='user')
     topics = relationship('TopicModel', uselist=True, back_populates='user')
@@ -24,7 +24,7 @@ class UserModel(Base, UserMixin):
         self.name = name
         self.last_name = last_name
         self.email = email
-        self.passward = scram.hash(password)
+        self.password = scram.hash(password)
 
     def __repr__(self):
         return f"<UserModel(name={self.name}, last_name={self.last_name}, email={self.email})>"
