@@ -10,8 +10,6 @@ from memo_mingle.db.models.summaries_table import SummaryModel
 from memo_mingle.db.models.topics_table import TopicModel
 from memo_mingle.db.orm_config import Session, Base, engine
 
-# TODO: Add a "EditSummary" option that will allow a user to edit a Summary (only a Summary that the user created, not a Summary that was created by a different user) via the Summary name.
-# TODO: Add a "DeleteSummary" option Flask function that will allow a user to delete a Summary (only a Summary that the user created, not a Summary that was created by a different user) via the Summary name.
 # TODO: Add a "Liked" option to Summaries, that each user can "like" that Summary, and show how many "likes" that Summary received.
 # TODO: Add a "Follow" option to a Topic, that the users that "follow" that Topic can receive an update each time a new Summary was added to that Topic, and "<some num> new Summaries" from the last time the user saw the Summaries of that Topic.
 # TODO: Add a "ViewProfile" functionality that will allow users to see other users profile.
@@ -105,6 +103,40 @@ def create_summary():
         else:
             # return redirect(url_for('create_topic'))
             return jsonify(f"There is no Topic with name {topic_name}, please create one if you want to create your summary.")
+        
+
+@app.route("/delete_summary", methods=['POST'])
+@login_required
+def delete_summary():
+    with Session() as session:
+        summary_name = request.form['summary name']
+
+        summary = get_summary(summary_name, session)
+
+        if summary and summary.user_id == current_user.id:
+            session.delete(summary)
+            session.commit()
+            return jsonify(f"Deleted the summary with title {summary_name}.")
+        else:
+            # return redirect(url_for('create_topic'))
+            return jsonify(f"There is no Summary with the name {summary_name}, Or you are not the creator of this Summary.")
+
+
+@app.route("/edit_summary", methods=['POST'])
+@login_required
+def edit_summary():
+    with Session() as session:
+        summary_name = request.form['summary name']
+
+        summary = get_summary(summary_name, session)
+
+        if summary and summary.user_id == current_user.id:
+            content = request.form['summary']
+            summary.content = content
+            session.commit()
+            return jsonify(f"Content of {summary_name} has beeen edited.")
+        else:
+            return jsonify(f"There is no Summary with the name {summary_name}, Or you are not the creator of this Summary.")
 
 
 @app.route("/create_topic", methods=['POST'])
@@ -140,6 +172,14 @@ def get_topic(topic_name: str, seesion) -> TopicModel:
     except Exception as e:
         print(f"Topic does not exist: {repr(e)}")
         raise Exception("There is no Topic with this name.")
+
+
+def get_summary(summary_name: str, session) -> SummaryModel:
+    try:
+        return session.query(SummaryModel).filter_by(title=summary_name).first()
+    except Exception as e:
+        print(f"there is no summary with the given name {repr(e)}.")
+        raise Exception("There is no Summary with this name.")
 
     
 # The following is a test to see all the users, topics and summaries in the DB
@@ -207,3 +247,5 @@ if __name__ == '__main__':
 # TODO: Add a LogIn rout Flask function that loges in the user if the user is in the DB. Use the @login_required in every Flask function after login.
 # TODO: Add a "SignOut" option that will use the @login_required to get the userID, then sign that user out.
 # TODO: Add a CreateSummary rout Flask function that will use the @login_required to get the userID, then receive the info from thee post request and save to BD, the photo field is optional.
+# TODO: Add a "EditSummary" option that will allow a user to edit a Summary (only a Summary that the user created, not a Summary that was created by a different user) via the Summary name.
+# TODO: Add a "DeleteSummary" option Flask function that will allow a user to delete a Summary (only a Summary that the user created, not a Summary that was created by a different user) via the Summary name.
