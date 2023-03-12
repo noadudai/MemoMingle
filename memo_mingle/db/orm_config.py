@@ -3,7 +3,7 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.pool import NullPool
 from memo_mingle.db.docker_db_config import DATABASE
 
-engine = create_engine("postgresql+psycopg2://{db_username}:{db_password}@{db_host}:{db_port}/{db_name}".format(
+engine = create_engine("postgresql://{db_username}:{db_password}@{db_host}:{db_port}/{db_name}".format(
         db_username=DATABASE['USERNAME'], 
         db_password=DATABASE['PASSWORD'],
         db_host=DATABASE['HOST'],
