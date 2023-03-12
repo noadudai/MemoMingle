@@ -11,7 +11,7 @@ class TopicModel(Base):
 
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
-    summarys = relationship('SummaryModel', uselist=True, back_populates='topic')
+    summaries = relationship('SummaryModel', uselist=True, back_populates='topic')
     user = relationship('UserModel', back_populates='topics')
 
     def __init__(self, name, user_id):
