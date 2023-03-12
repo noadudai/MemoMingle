@@ -9,6 +9,7 @@ from memo_mingle.db.models.user_table import UserModel
 from memo_mingle.db.models.summaries_table import SummaryModel
 from memo_mingle.db.models.topics_table import TopicModel
 from memo_mingle.db.orm_config import Session, Base, engine
+from memo_mingle.communication.messages import FailMessage, SuccessMessage
 
 # TODO: Add a "Liked" option to Summaries, that each user can "like" that Summary, and show how many "likes" that Summary received.
 # TODO: Add a "Follow" option to a Topic, that the users that "follow" that Topic can receive an update each time a new Summary was added to that Topic, and "<some num> new Summaries" from the last time the user saw the Summaries of that Topic.
@@ -42,17 +43,16 @@ def sign_up():
         password = request.form['password']
 
         if session.query(session.query(UserModel).filter_by(email=email).exists()).scalar():
-            # message = FailedMessage("User already signed in.")
-            # return json.dumps(message.to_dict())
-            return jsonify("already signed up")
+            message = FailMessage("User already signed in.")
+            return json.dumps(message.to_dict())
         else:
             user_model = UserModel(name, last_name, email, password)
             session.add(user_model)
             session.commit()
-            # message = SuccessMessage("Signed up successfully!")
-            # return json.dumps(message.to_dict())
+
+            message = SuccessMessage("Signed up successfully!")
+            return json.dumps(message.to_dict())
             # return redirect(url_for('login'))
-            return jsonify("succsses")
 
 
 @app.route("/login", methods=['POST'])
@@ -65,16 +65,16 @@ def login():
             user = get_user(email, session)
             if scram.verify(password, user.password):
                 login_user(user, force=True)
+
+                message = SuccessMessage("You are now Loged in.")
+                return json.dumps(message.to_dict())
                 # return redirect(url_for('home'))
-                return jsonify("succsses")
             else:
-                # message = FailedMessage("Failed to login, password is incorrect")
-                # return json.dumps(message.to_dict())
-                return jsonify("Failed to login, password is incorrect")
+                message = FailMessage("Failed to login, password is incorrect.")
+                return json.dumps(message.to_dict())
         else:
-            # message = FailedMessage("Failed to login, email is incorrect")
-            # return json.dumps(message.to_dict())
-            return jsonify("Failed to login, email is incorrect")
+            message = FailMessage("Failed to login, email is incorrect.")
+            return json.dumps(message.to_dict())
 
 
 @app.route("/logout", methods=['GET', 'POST'])
@@ -82,7 +82,8 @@ def login():
 def logout():
     logout_user()
     # return redirect(url_for('login'))
-    return jsonify("succssesfully loged out")
+    message = SuccessMessage("succssesfully loged out.")
+    return json.dumps(message.to_dict())
 
 
 @app.route("/create_summary", methods=['POST'])
@@ -96,15 +97,24 @@ def create_summary():
         topic = get_topic(topic_name, session)
 
         if topic:
+            if get_summary(summary_name, session):
+                message = FailMessage(f"There is a Summary existing with the name {summary_name}, please create a Summary with a different name.")
+                return json.dumps(message.to_dict())
+            
             new_summary = SummaryModel(summary_name, summary, topic.id, current_user.id)
+            
             session.add(new_summary)
             session.commit()
-            return jsonify(f"Created new summary under {topic_name} with title {summary_name}.")
+
+            message = SuccessMessage(f"Created new summary under {topic_name} with title {summary_name}.")
+            return json.dumps(message.to_dict())
         else:
             # return redirect(url_for('create_topic'))
-            return jsonify(f"There is no Topic with name {topic_name}, please create one if you want to create your summary.")
+            message = FailMessage(f"There is no Topic with name {topic_name}, please create one if you want to create your summary.")
+            return json.dumps(message.to_dict())
         
 
+# This will be an "On Click" function
 @app.route("/delete_summary", methods=['POST'])
 @login_required
 def delete_summary():
@@ -116,12 +126,16 @@ def delete_summary():
         if summary and summary.user_id == current_user.id:
             session.delete(summary)
             session.commit()
-            return jsonify(f"Deleted the summary with title {summary_name}.")
+
+            message = SuccessMessage(f"Deleted the summary with title {summary_name}.")
+            return json.dumps(message.to_dict())
         else:
             # return redirect(url_for('create_topic'))
-            return jsonify(f"There is no Summary with the name {summary_name}, Or you are not the creator of this Summary.")
+            message = FailMessage(f"There is no Summary with the name {summary_name}, Or you are not the creator of this Summary.")
+            return json.dumps(message.to_dict())
 
 
+# This will be an "On Click" function
 @app.route("/edit_summary", methods=['POST'])
 @login_required
 def edit_summary():
@@ -134,9 +148,12 @@ def edit_summary():
             content = request.form['summary']
             summary.content = content
             session.commit()
-            return jsonify(f"Content of {summary_name} has beeen edited.")
+
+            message = SuccessMessage(f"Content of {summary_name} has beeen edited.")
+            return json.dumps(message.to_dict())
         else:
-            return jsonify(f"There is no Summary with the name {summary_name}, Or you are not the creator of this Summary.")
+            message = FailMessage(f"There is no Summary with the name {summary_name}, Or you are not the creator of this Summary.")
+            return json.dumps(message.to_dict())
 
 
 @app.route("/create_topic", methods=['POST'])
@@ -148,13 +165,16 @@ def create_topic():
 
         if topic:
             # return redirect(url_for('create_summary'))
-            return jsonify(f"There is a Topic with this name {topic_name}")
+            message = FailMessage(f"There is already a Topic with this name {topic_name}")
+            return json.dumps(message.to_dict())
         else:
             new_topic = TopicModel(topic_name, current_user.id)
             session.add(new_topic)
             session.commit()
             # return redirect(url_for('create_summary'))
-            return jsonify(f"Created new Topic: {topic_name}.")
+            
+            message = SuccessMessage(f"Created new Topic: {topic_name}.")
+            return json.dumps(message.to_dict())
 
 
 # -----------Utility functions-----------
