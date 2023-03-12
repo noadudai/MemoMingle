@@ -52,7 +52,6 @@ def sign_up():
 
             message = SuccessMessage("Signed up successfully!")
             return json.dumps(message.to_dict())
-            # return redirect(url_for('login'))
 
 
 @app.route("/login", methods=['POST'])
@@ -68,7 +67,6 @@ def login():
 
                 message = SuccessMessage("You are now Loged in.")
                 return json.dumps(message.to_dict())
-                # return redirect(url_for('home'))
             else:
                 message = FailMessage("Failed to login, password is incorrect.")
                 return json.dumps(message.to_dict())
@@ -81,7 +79,6 @@ def login():
 @login_required
 def logout():
     logout_user()
-    # return redirect(url_for('login'))
     message = SuccessMessage("succssesfully loged out.")
     return json.dumps(message.to_dict())
 
@@ -109,7 +106,6 @@ def create_summary():
             message = SuccessMessage(f"Created new summary under {topic_name} with title {summary_name}.")
             return json.dumps(message.to_dict())
         else:
-            # return redirect(url_for('create_topic'))
             message = FailMessage(f"There is no Topic with name {topic_name}, please create one if you want to create your summary.")
             return json.dumps(message.to_dict())
         
@@ -130,7 +126,6 @@ def delete_summary():
             message = SuccessMessage(f"Deleted the summary with title {summary_name}.")
             return json.dumps(message.to_dict())
         else:
-            # return redirect(url_for('create_topic'))
             message = FailMessage(f"There is no Summary with the name {summary_name}, Or you are not the creator of this Summary.")
             return json.dumps(message.to_dict())
 
@@ -141,11 +136,12 @@ def delete_summary():
 def edit_summary():
     with Session() as session:
         summary_name = request.form['summary name']
+        content = request.form['content']
 
-        summary = get_summary(summary_name, session)
+        summary = session.query(SummaryModel).filter_by(title=summary_name).first()
+        print(str(summary))
 
         if summary and summary.user_id == current_user.id:
-            content = request.form['summary']
             summary.content = content
             session.commit()
 
@@ -164,14 +160,12 @@ def create_topic():
         topic = get_topic(topic_name, session)
 
         if topic:
-            # return redirect(url_for('create_summary'))
             message = FailMessage(f"There is already a Topic with this name {topic_name}")
             return json.dumps(message.to_dict())
         else:
             new_topic = TopicModel(topic_name, current_user.id)
             session.add(new_topic)
             session.commit()
-            # return redirect(url_for('create_summary'))
             
             message = SuccessMessage(f"Created new Topic: {topic_name}.")
             return json.dumps(message.to_dict())
@@ -229,43 +223,5 @@ def show_all_summaries():
     
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
-    app.run()
+    app.run(""" debug=True """)
 
-
-
-
-
-
-
-# The Following are for testing if the DB sessions and quering works.
-# def create_user(name: str, last_name: str, email: str, password: str) -> None:
-#     with Session() as session:
-#         if session.query(session.query(UserModel).filter_by(email=email).exists()).scalar:
-#             print("User is already exists!")
-#         else:
-#             user_model = UserModel(name=name, last_name=last_name, email=email, password=password);
-#             session.add(user_model);
-#             session.commit();
-
-# def print_users():
-#     with Session() as session:
-#         users = session.query(UserModel).all()
-
-#         for user in users:
-#             print(user.id, user.name, user.last_name, user.email)
-
-
-# if __name__ == '__main__':
-#     Base.metadata.create_all(engine)
-#     create_user("somename", "somelastname", "sfdrg@fds", "12345")
-
-#     print_users()
-
-# DONE:
-# TODO: Add a CreateAccount rout Flask function that saves the created user to the DB, and return "Signed up successfully!" or "User already signed in." 
-# TODO: Add a login manager with Flask
-# TODO: Add a LogIn rout Flask function that loges in the user if the user is in the DB. Use the @login_required in every Flask function after login.
-# TODO: Add a "SignOut" option that will use the @login_required to get the userID, then sign that user out.
-# TODO: Add a CreateSummary rout Flask function that will use the @login_required to get the userID, then receive the info from thee post request and save to BD, the photo field is optional.
-# TODO: Add a "EditSummary" option that will allow a user to edit a Summary (only a Summary that the user created, not a Summary that was created by a different user) via the Summary name.
-# TODO: Add a "DeleteSummary" option Flask function that will allow a user to delete a Summary (only a Summary that the user created, not a Summary that was created by a different user) via the Summary name.
