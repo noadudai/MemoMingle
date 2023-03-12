@@ -53,8 +53,8 @@ def sign_up():
             session.commit()
             # message = SuccessMessage("Signed up successfully!")
             # return json.dumps(message.to_dict())
-            return redirect(url_for('login'))
-            # return jsonify("succsses")
+            # return redirect(url_for('login'))
+            return jsonify("succsses")
 
 
 @app.route("/login", methods=['POST'])
@@ -103,8 +103,8 @@ def create_summary():
             session.commit()
             return jsonify(f"Created new summary under {topic_name} with title {summary_name}.")
         else:
-            return redirect(url_for('create_topic'))
-            # return jsonify(f"There is no Topic with name {topic_name}, please create one if you want to create your summary.")
+            # return redirect(url_for('create_topic'))
+            return jsonify(f"There is no Topic with name {topic_name}, please create one if you want to create your summary.")
 
 
 @app.route("/create_topic", methods=['POST'])
@@ -121,8 +121,8 @@ def create_topic():
             new_topic = TopicModel(topic_name, current_user.id)
             session.add(new_topic)
             session.commit()
-            return redirect(url_for('create_summary'))
-            # return jsonify(f"Created new Topic: {topic_name}.")
+            # return redirect(url_for('create_summary'))
+            return jsonify(f"Created new Topic: {topic_name}.")
 
 
 # -----------Utility functions-----------
