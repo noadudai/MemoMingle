@@ -4,7 +4,7 @@ from passlib.hash import scram
 from flask_login import UserMixin
 
 from memo_mingle.db.orm_config import Base
-from memo_mingle.db.models.summarys_table import SummaryModel
+from memo_mingle.db.models.summaries_table import SummaryModel
 
 # TODO: Add a login manager with Flask
 
@@ -17,7 +17,7 @@ class UserModel(Base, UserMixin):
     email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False, unique=True)
 
-    summarys = relationship('SummaryModel', uselist=True, back_populates='user')
+    summaries = relationship('SummaryModel', uselist=True, back_populates='user')
     topics = relationship('TopicModel', uselist=True, back_populates='user')
 
     def __init__(self, name, last_name, email, password):

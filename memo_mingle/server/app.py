@@ -6,7 +6,7 @@ import os
 from passlib.hash import scram
 
 from memo_mingle.db.models.user_table import UserModel
-from memo_mingle.db.models.summarys_table import SummaryModel
+from memo_mingle.db.models.summaries_table import SummaryModel
 from memo_mingle.db.models.topics_table import TopicModel
 from memo_mingle.db.orm_config import Session, Base, engine
 
@@ -53,8 +53,8 @@ def sign_up():
             session.commit()
             # message = SuccessMessage("Signed up successfully!")
             # return json.dumps(message.to_dict())
-            # return redirect(url_for('login'))
-            return jsonify("succsses")
+            return redirect(url_for('login'))
+            # return jsonify("succsses")
 
 
 @app.route("/login", methods=['POST'])
@@ -87,7 +87,6 @@ def logout():
     return jsonify("succssesfully loged out")
 
 
-# TODO: Add a CreateSummary rout Flask function that will use the @login_required to get the userID, then receive the info from thee post request and save to BD, the photo field is optional.
 @app.route("/create_summary", methods=['POST'])
 @login_required
 def create_summary():
@@ -104,8 +103,8 @@ def create_summary():
             session.commit()
             return jsonify(f"Created new summary under {topic_name} with title {summary_name}.")
         else:
-            # return redirect(url_for('create_topic'))
-            return jsonify(f"There is no Topic with name {topic_name}, please create one if you want to create your summary.")
+            return redirect(url_for('create_topic'))
+            # return jsonify(f"There is no Topic with name {topic_name}, please create one if you want to create your summary.")
 
 
 @app.route("/create_topic", methods=['POST'])
@@ -116,14 +115,14 @@ def create_topic():
         topic = get_topic(topic_name, session)
 
         if topic:
-            # return redirect(url_for('create_topic'))
+            # return redirect(url_for('create_summary'))
             return jsonify(f"There is a Topic with this name {topic_name}")
         else:
             new_topic = TopicModel(topic_name, current_user.id)
             session.add(new_topic)
             session.commit()
-            # return redirect(url_for('create_topic'))
-            return jsonify(f"Created new Topic: {topic_name}.")
+            return redirect(url_for('create_summary'))
+            # return jsonify(f"Created new Topic: {topic_name}.")
 
 
 # -----------Utility functions-----------
@@ -143,7 +142,7 @@ def get_topic(topic_name: str, seesion) -> TopicModel:
         raise Exception("There is no Topic with this name.")
 
     
-# The following is a test to see all the users in the DB
+# The following is a test to see all the users, topics and summaries in the DB
 @app.route('/show_all_users', methods=["GET", "POST"])
 def show_all_users():
     with Session() as session:
@@ -207,3 +206,4 @@ if __name__ == '__main__':
 # TODO: Add a login manager with Flask
 # TODO: Add a LogIn rout Flask function that loges in the user if the user is in the DB. Use the @login_required in every Flask function after login.
 # TODO: Add a "SignOut" option that will use the @login_required to get the userID, then sign that user out.
+# TODO: Add a CreateSummary rout Flask function that will use the @login_required to get the userID, then receive the info from thee post request and save to BD, the photo field is optional.
