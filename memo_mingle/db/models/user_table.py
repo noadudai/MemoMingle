@@ -17,8 +17,8 @@ class UserModel(Base, UserMixin):
     email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False, unique=True)
 
-    summaries = relationship('SummaryModel', uselist=True, back_populates='user')
-    topics = relationship('TopicModel', uselist=True, back_populates='user')
+    # summaries = relationship('SummaryModel', uselist=True, back_populates='user')
+    # topics = relationship('TopicModel', uselist=True, back_populates='user')
 
     def __init__(self, name, last_name, email, password):
         self.name = name
