@@ -134,3 +134,4 @@ dmypy.json
 *.json
 docker-compose.yml
 *.ini
+config/
