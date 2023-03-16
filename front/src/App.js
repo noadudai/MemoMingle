@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Navbar from "./components/Navbar"
 
 
-function App1(){
+function App(){
     return (
         <>
             <Navbar />
@@ -10,7 +10,7 @@ function App1(){
     )
 }
 
-function App() {
+function App1() {
     const [summary_name, setSummaryName] = React.useState('')
     const [summary, setSummary] = React.useState('')
 
@@ -30,7 +30,7 @@ function App() {
     }
     
     return (
-    <form onClick={HandleSubmit}>
+    <form onClick={HandleSubmit} >
         <label>
           Summary Name:
           <input type="text" value={summary_name} onChange={(e) => setSummaryName(e.target.value)} />
