@@ -61,6 +61,6 @@ async def update_summary(request: Request):
 def show_all_summaries():
     with Session() as session:
         summaries = session.query(SummaryModel).all()
-        return_list = [str(summary) for summary in summaries]
+        return_list = [summary for summary in summaries]
         return_str = str(return_list)
-        return jsonable_encoder(return_str)
+        return return_str

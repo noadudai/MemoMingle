@@ -135,6 +135,3 @@ dmypy.json
 docker-compose.yml
 *.ini
 config/
-front/yarn.lock
-
-front/node_models/

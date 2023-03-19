@@ -1,3 +1,4 @@
+import json
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -24,7 +25,8 @@ class SummaryModel(Base):
         # self.user_id = user_id
 
     def __repr__(self):
-        return f"<SummaryTable(title={self.title}, content={self.content})>"
+        summary_dict = {"id" : self.id, "title" : self.title, "content" : self.content}
+        return json.dumps(summary_dict)
 
 # TODO: add a PhotoModel table and associate a filename/url Column to the SummaryModel, 
 # then create a file storage service (s3) that the photo will be saved there.

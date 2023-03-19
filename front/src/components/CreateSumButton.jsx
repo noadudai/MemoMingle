@@ -33,13 +33,13 @@ const CreateSummaryButton = ({isOpen, onClose}) => {
                 <input
                     type="text"
                     id="title"
-                    clas="shadow appearance-none border rounded w-full py-2 px-3 bg-orange-100 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mt-2 mb-2"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 bg-gray-700 text-white leading-tight focus:outline-none focus:shadow-outline mt-2 mb-2"
                     placeholder="Summery Title" 
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}/>
                 
                 <textarea
-                    class="shadow appearance-none border rounded w-full py-2 px-3 bg-orange-100 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mt-2 mb-2"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 bg-gray-700 text-white leading-tight focus:outline-none focus:shadow-outline mt-2 mb-2"
                     id="content"
                     rows="5"
                     placeholder="Summary Content"
@@ -50,7 +50,7 @@ const CreateSummaryButton = ({isOpen, onClose}) => {
             </div>
             <div class="flex justify-center space-x-2" onClick={handleCreateSummary}>
                 <button>
-                    Subbmit
+                    Submit
                 </button>
             </div>
         </div>
