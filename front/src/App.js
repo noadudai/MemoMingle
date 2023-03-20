@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import Navbar from "./components/Navbar"
+import SummariesList from './components/SummariesList';
 
 
 function App(){
+
     return (
         <>
             <Navbar />
+            <SummariesList />
         </>
     )
 }

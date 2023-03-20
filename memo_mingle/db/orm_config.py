@@ -10,6 +10,7 @@ engine = create_engine("postgresql://{db_username}:{db_password}@{db_host}:{db_p
         db_port=DATABASE['PORT'],
         db_name=DATABASE['NAME']
     ), echo=True, poolclass=NullPool)
+
 Base = declarative_base()
 
 Session = sessionmaker(bind=engine)
