@@ -13,7 +13,7 @@ const Navbar = () => {
     const handleClick = () =>setNav(!nav)
 
     return (
-        <div className="w-screen h-[80px] z-10 bg-gray-800 fixed drop-shadow-lg">
+        <div className="w-screen h-[80px] z-10 bg-gray-800 fixed drop-shadow-lg top-0">
             <div className='px-2 flex justify-between items-center w-full h-full'>
                 <div className="flex items-center">
                     <h1 className="text-xl mr-4 font-bold sm:text-4xl text-white">Memo Mingle</h1>

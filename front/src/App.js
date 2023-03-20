@@ -4,9 +4,10 @@ import SummariesList from './components/SummariesList';
 
 
 function App(){
+
     return (
         <>
-            {/* <Navbar /> */}
+            <Navbar />
             <SummariesList />
         </>
     )

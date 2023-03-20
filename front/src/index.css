@@ -8,6 +8,8 @@
     }
 
     button {
-        @apply text-white bg-orange-600 hover:bg-orange-700 hover:text-white rounded-md px-3 m-2
-    }
+        @apply text-white bg-violet-500 hover:bg-violet-400
+         hover:text-white dark:bg-teal-600 dark:hover:bg-teal-500
+         dark:text-white rounded-md px-3 m-[1.5px] drop-shadow-lg
+    } 
 }

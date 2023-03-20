@@ -1,47 +1,54 @@
 import React, { useState, useEffect } from "react";
+import SummaryModel from "./SummaryModel";
 
 const SummariesList = () => {
-  const [articles, setArticles] = useState([]);
-  const [selectedArticle, setSelectedArticle] = useState(null);
+    const [articles, setArticles] = useState([]);
+    const [selectedArticle, setSelectedArticle] = useState(null);
+    const [showSummaryModel, setShowSummaryModel] = useState(null);
 
-  console.log(typeof articles)
-  useEffect(() => {
-      try {
-        fetch("http://127.0.0.1:8000/show_all_summaries")
-            .then(response => response.json())
-            .then(data => setArticles(JSON.parse(data)));
+    useEffect(() => {
+        try {
+            fetch("http://127.0.0.1:8000/show_all_summaries")
+                .then(response => response.json())
+                .then(data => setArticles(JSON.parse(data)));
 
-        } catch (error) {
-            console.error(error);
-        }
+            } catch (error) {
+                console.error(error);
+            }
     }, []);
 
     const handleItemClick = (item) => {
         setSelectedArticle(item);
-      };
+    };
+
+    const handleOnClose = () => {
+        setShowSummaryModel(false);
+    };
 
     return (
-        <div class="relative inline-block text-left">
-            {articles.map((article) => (
-                <button
-                key={article.id}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={() => {
-                    // code to show article content goes here
-                    handleItemClick(article)
-                }}
-                >
-                {article.title}
-                </button>
-            ))}
-            {selectedArticle && (
-                <Dropdown
-                title={selectedArticle.title}
-                items={[{ content: selectedArticle.content }]}
-                />
-            )}
+        // <div class="relative text-left flex flex-col">
+        <div className="dark pt-28">
+            <div className="text-center bg-gray-800 text-white">
+                <p className="pt-2 py-2">Summaries</p>    
+                
+            </div>
+            <div className="flex flex-col">
+                {articles.map((article) => (
+                    <button
+                    key={article.id}
+                    onClick={() => {
+                        handleItemClick(article)
+                        setShowSummaryModel(true)
+                    }}
+                    >
+                    {article.title}
+                    </button>
+                ))}
+            </div>
+            <SummaryModel onClose={handleOnClose} visible={showSummaryModel} article={selectedArticle}/>
         </div>
+
     )
 }
 
-export default SummariesList;;
+export default SummariesList;
