@@ -20,6 +20,7 @@ const CreateSummaryButton = ({isOpen, onClose}) => {
         setContent("");
         setTitle("");
         console.log(response.data);
+        
     }
 
     if (!isOpen)
@@ -28,7 +29,7 @@ const CreateSummaryButton = ({isOpen, onClose}) => {
     }
 
     return (
-        <div class="flex justify-center">
+        <div class="dark flex justify-center">
             <div class="relative mb-3 xl:w-96" data-te-input-wrapper-init>
                 <input
                     type="text"
