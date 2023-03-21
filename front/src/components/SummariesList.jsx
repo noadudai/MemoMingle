@@ -27,12 +27,12 @@ const SummariesList = () => {
 
     return (
         // <div class="relative text-left flex flex-col">
-        <div className="dark pt-28">
-            <div className="text-center bg-gray-800 text-white">
-                <p className="pt-2 py-2">Summaries</p>    
+        <div className="dark pt-28 bg-gray-900">
+            <div className="text-center bg-gray-800 text-white flex flex-col rounded mx-20 mr-20">
+                <p className="pt-2 py-2 ">Summaries</p>    
                 
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col mx-20 mr-20 rounded-md px-3 m-[1.5px]">
                 {articles.map((article) => (
                     <button
                     key={article.id}

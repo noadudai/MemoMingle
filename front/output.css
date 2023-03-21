@@ -631,9 +631,23 @@ button:hover {
   z-index: 10;
 }
 
+.m-\[1\.5px\] {
+  margin: 1.5px;
+}
+
 .my-4 {
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+.mx-64 {
+  margin-left: 16rem;
+  margin-right: 16rem;
+}
+
+.mx-20 {
+  margin-left: 5rem;
+  margin-right: 5rem;
 }
 
 .mb-2 {
@@ -650,6 +664,14 @@ button:hover {
 
 .mt-2 {
   margin-top: 0.5rem;
+}
+
+.mr-64 {
+  margin-right: 16rem;
+}
+
+.mr-20 {
+  margin-right: 5rem;
 }
 
 .flex {
@@ -684,6 +706,14 @@ button:hover {
   width: 100vw;
 }
 
+.w-64 {
+  width: 16rem;
+}
+
+.flex-none {
+  flex: none;
+}
+
 .appearance-none {
   -webkit-appearance: none;
           appearance: none;
@@ -691,6 +721,10 @@ button:hover {
 
 .flex-col {
   flex-direction: column;
+}
+
+.content-center {
+  align-content: center;
 }
 
 .items-center {
@@ -713,6 +747,10 @@ button:hover {
 
 .rounded {
   border-radius: 0.25rem;
+}
+
+.rounded-md {
+  border-radius: 0.375rem;
 }
 
 .border {
@@ -741,6 +779,11 @@ button:hover {
 
 .bg-transparent {
   background-color: transparent;
+}
+
+.bg-gray-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(17 24 39 / var(--tw-bg-opacity));
 }
 
 .bg-opacity-30 {

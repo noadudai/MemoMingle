@@ -6,10 +6,10 @@ import SummariesList from './components/SummariesList';
 function App(){
 
     return (
-        <>
+        <div className='bg-gray-900'>
             <Navbar />
             <SummariesList />
-        </>
+        </div>
     )
 }
 
