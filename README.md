@@ -17,6 +17,6 @@ uvicorn memo_mingle.server.fastapi_app:app --reload
 npm start
 
 #from the builtin terminal of the IDE in the front dir activate tailwind:
-npx tailwind -i ./src/idex.css -o output.css --watch
+npx tailwind -i ./src/index.css -o output.css --watch
 
 ```
