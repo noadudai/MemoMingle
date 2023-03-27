@@ -869,6 +869,10 @@ button:hover {
   padding-top: 7rem;
 }
 
+.text-left {
+  text-align: left;
+}
+
 .text-center {
   text-align: center;
 }
