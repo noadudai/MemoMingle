@@ -59,6 +59,7 @@ const SummariesList = () => {
                                 setTitle(summary.title);
                                 setToEdit(true);
                                 setLastUpdated(Date.now());}}>Edit</button>
+                            <button className="text-xs bg-red-500 hover:bg-red-400">Delete</button>
                        </div>
                        {toEdit === false ?
                             <p className="whitespace-pre-wrap">{summary.content}</p>

@@ -74,6 +74,25 @@ async def edit_summary(request: Request):
             return json.dumps(message.to_dict())
         except Exception as e:
             session.rollback()
-            message = FailMessage(f"failed to edit {repr(e)}")
+            message = FailMessage(f"failed to edit '{repr(e)}'")
+
+            return json.dumps(message.to_dict)
+        
+# This will be an "On Click" function
+@app.delete("/delete_summary")
+async def delete_summary(request: Request):
+    with Session() as session:
+        respons = await request.json()
+        summary_name = respons.get('summary name')
+
+        try:
+            session.query(SummaryModel).filter(SummaryModel.title == summary_name).delete()
+            session.commit()
+
+            message = SuccessMessage(f"'{summary_name}' has beeen deleted.")
+            return json.dumps(message.to_dict())
+        except Exception as e:
+            session.rollback()
+            message = FailMessage(f"failed to delete '{repr(e)}'")
 
             return json.dumps(message.to_dict)
