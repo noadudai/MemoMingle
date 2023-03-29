@@ -1,8 +1,6 @@
 import json
 from fastapi import FastAPI, Request
-from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 
 from memo_mingle.communication.messages import FailMessage
 from memo_mingle.db.models.summaries_table import SummaryModel
@@ -16,7 +14,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET, POST, PUT, DELETE, OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"]
 )
 
@@ -50,13 +48,7 @@ async def create_summary(request: Request):
         except Exception as e:
             session.rollback()
             message = FailMessage(f"A Summary with that name is already exists: {summary_name}. {repr(e)}")
-            return json.dumps(message.to_dict())
-
-@app.put("/update_summary")
-async def update_summary(request: Request):
-    with Session() as session:
-        new_content = await request.json()
-        
+            return json.dumps(message.to_dict())    
 
 @app.get('/show_all_summaries')
 def show_all_summaries():
@@ -74,17 +66,14 @@ async def edit_summary(request: Request):
         summary_name = respons.get('summary_name')
         content = respons.get('summary')
 
-        response = JSONResponse()
-        response.headers["Access-Control-Allow-Origin"] = "*"
-
         try:
-            session.query(SummaryModel).filter_by(title=summary_name).first().update(content=content)
+            session.query(SummaryModel).filter(SummaryModel.title == summary_name).update({"content": content})
             session.commit()
 
-            message = SuccessMessage(f"Content of {summary_name} has beeen edited.")
+            message = SuccessMessage(f"Content of '{summary_name}' has beeen edited.")
             return json.dumps(message.to_dict())
         except Exception as e:
             session.rollback()
-            message = FailMessage(f"{e}")
+            message = FailMessage(f"failed to edit {repr(e)}")
 
             return json.dumps(message.to_dict)

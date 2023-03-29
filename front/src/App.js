@@ -3,7 +3,7 @@ import Navbar from "./components/Navbar"
 import SummariesList from './components/SummariesList';
 
 
-function App(){
+function App(){   
     return (
         <div className='bg-gray-900 max-h-screen'>
             <div className='flex-1'>
