@@ -27,7 +27,7 @@ const Navbar = () => {
             </div>
 
             <div className={!nav ? "hidden" : "absolute bg-gray-800 px-8 flex flex-col my-4"}>
-                    <button onClick={() => setIsModalOpen(true)}>Create Summary</button> 
+                    <button className="text-white bg-teal-600 hover:bg-teal-500" onClick={() => setIsModalOpen(true)}>Create Summary</button> 
                     <CreateSummaryButton isOpen={isMoodelOpen} onClose={() => setIsModalOpen(false)}/>
             </div>
         </div>

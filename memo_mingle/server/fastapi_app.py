@@ -83,7 +83,7 @@ async def edit_summary(request: Request):
 async def delete_summary(request: Request):
     with Session() as session:
         respons = await request.json()
-        summary_name = respons.get('summary name')
+        summary_name = respons.get('summary_name')
 
         try:
             session.query(SummaryModel).filter(SummaryModel.title == summary_name).delete()
