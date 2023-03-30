@@ -50,7 +50,7 @@ const CreateSummaryButton = ({isOpen, onClose}) => {
                 
             </div>
             <div class="flex justify-center space-x-2" onClick={handleCreateSummary}>
-                <button>
+                <button className="text-white bg-teal-600 hover:bg-teal-500">
                     Submit
                 </button>
             </div>
