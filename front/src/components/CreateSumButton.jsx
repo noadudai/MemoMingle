@@ -14,7 +14,7 @@ const CreateSummaryButton = ({isOpen, onClose}) => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(new_summary)
-        })
+        }).then(() => {window.location.reload()});
         
         onClose();
         setContent("");

@@ -10,7 +10,6 @@ const SummariesList = () => {
     const [lastUpdated, setLastUpdated] = useState(Date.now());
     const [contentToEdit, setContentToEdit] = useState("");
     const [title, setTitle] = useState("");
-    const [titleToDelete, setTitleToDelete] = useState("");
 
     useEffect(() => {
         try {
@@ -33,6 +32,7 @@ const SummariesList = () => {
             body: JSON.stringify(edited_summary)
         }).then(response => response.json())
         .then(data => console.log(data))
+        .then(() => {window.location.reload()})
         .catch(error => console.error(error));
 
         handleOnClose();
@@ -50,9 +50,8 @@ const SummariesList = () => {
             body: JSON.stringify(delete_summary)
         }).then(response => response.json())
         .then(data => console.log(data))
+        .then(() => {window.location.reload()})
         .catch(error => console.error(error));
-
-        setTitleToDelete("");
     };
 
     const edited_summary = {
@@ -93,7 +92,7 @@ const SummariesList = () => {
                                         onChange={(e) => setContentToEdit(e.target.value)}>
                                     </textarea>
                                 </div>
-                                <button onClick={handleEditButton}>Submit changes</button>
+                                <button className="bg-teal-600 hover:bg-teal-500 text-xs" onClick={handleEditButton}>Submit changes</button>
                             </div>
                         </div>
                         }
