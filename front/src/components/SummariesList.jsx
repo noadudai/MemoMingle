@@ -62,8 +62,8 @@ const SummariesList = () => {
     return (
         <div className="dark pt-28 bg-gray-900">
             <div className="flex justify-center">
-                <div className="flex-initial text-center bg-gray-800 text-white rounded">
-                    <p className="pt-2 py-2 p-40 text-2xl">Summaries</p>    
+                <div className="flex-initial w-64 text-center bg-gray-800 text-white rounded">
+                    <p className="p-2 text-2xl">Summaries</p>    
                 </div>
             </div>
             <div className="flex flex-wrap justify-center">
