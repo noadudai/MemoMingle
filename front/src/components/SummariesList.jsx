@@ -1,6 +1,7 @@
 /* Destructuring the useState and useEffect from the "react" object into the 
 useState ans useEffect variables. */
 import React, { useState, useEffect } from "react";
+import Pagination from "./Pagination";
 
 // Arrow function assigned to the variable SummariesList.
 const SummariesList = () => {
@@ -10,12 +11,18 @@ const SummariesList = () => {
     const [lastUpdated, setLastUpdated] = useState(Date.now());
     const [contentToEdit, setContentToEdit] = useState("");
     const [title, setTitle] = useState("");
+    const [numberOfPages, setNumberOfPages] = useState(0);
+    const [itemsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         try {
             fetch("http://127.0.0.1:8000/show_all_summaries")
                 .then(response => response.json())
-                .then(data => setSummaries(JSON.parse(data)));
+                .then(data => {
+                    setSummaries(JSON.parse(data));
+                    setNumberOfPages(Math.ceil(summaries/itemsPerPage));
+                });
         } catch (error) {
             console.error(error);
         }
@@ -58,6 +65,15 @@ const SummariesList = () => {
         "summary_name" : title,
         "summary" : contentToEdit
     };
+
+    // for example, page 4. 4 * 10 = 40 (the last indexs of that page's summery)
+    const endSummaryIndex = currentPage * itemsPerPage;
+
+    // last index - 10 (the items per page) will give the first item to that page.
+    const startSummaryIndex = endSummaryIndex - itemsPerPage;
+
+    // extructs the summaries of the current page.
+    const summariesPaging = summaries.slice(startSummaryIndex, endSummaryIndex);
     
     return (
         <div className="dark pt-28 bg-gray-900">
@@ -67,7 +83,7 @@ const SummariesList = () => {
                 </div>
             </div>
             <div className="flex flex-wrap justify-center">
-                {summaries.map((summary) => (
+                {summariesPaging.map((summary) => (
                     <div key={summary.title} className="flex-initial w-64 bg-gray-700 p-2 text-white rounded m-1">
                         <div className="flex rounded bg-gray-800 justify-around">
                             <h2 className="text-lg">{summary.title}</h2>
@@ -102,6 +118,11 @@ const SummariesList = () => {
                     </div>
                 ))}
             </div>
+            {/* <Pagination 
+                itemsPerPage={itemsPerPage}
+                totalitems={numberOfPages}
+                currentPage={currentPage}
+                onPageChange={(page) => setCurrentPage(page)} /> */}
         </div>
     )
 }
