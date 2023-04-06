@@ -11,8 +11,7 @@ const SummariesList = () => {
     const [lastUpdated, setLastUpdated] = useState(Date.now());
     const [contentToEdit, setContentToEdit] = useState("");
     const [title, setTitle] = useState("");
-    const [numberOfPages, setNumberOfPages] = useState(0);
-    const [itemsPerPage] = useState(10);
+    const [itemsPerPage] = useState(2);
     const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
@@ -21,7 +20,6 @@ const SummariesList = () => {
                 .then(response => response.json())
                 .then(data => {
                     setSummaries(JSON.parse(data));
-                    setNumberOfPages(Math.ceil(summaries/itemsPerPage));
                 });
         } catch (error) {
             console.error(error);
@@ -75,6 +73,10 @@ const SummariesList = () => {
     // extructs the summaries of the current page.
     const summariesPaging = summaries.slice(startSummaryIndex, endSummaryIndex);
     
+    const changePage = (pageNumber) => {
+        setCurrentPage(pageNumber)
+    };
+    
     return (
         <div className="dark pt-28 bg-gray-900">
             <div className="flex justify-center">
@@ -118,11 +120,11 @@ const SummariesList = () => {
                     </div>
                 ))}
             </div>
-            {/* <Pagination 
+            <Pagination 
                 itemsPerPage={itemsPerPage}
-                totalitems={numberOfPages}
+                totalitems={summaries.length}
                 currentPage={currentPage}
-                onPageChange={(page) => setCurrentPage(page)} /> */}
+                onPageChange={changePage} />
         </div>
     )
 }
