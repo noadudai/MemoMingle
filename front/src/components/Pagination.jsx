@@ -16,6 +16,7 @@ const Pagination = ({ itemsPerPage, totalitems, currentPage, onPageChange }) => 
                     <li>
                         {pageNumbers.map((number) => (
                             <a 
+                                key={number}
                                 onClick={ () => {onPageChange(number)}}
                                 href="#"
                                 className={currentPage === number ?

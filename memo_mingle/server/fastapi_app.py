@@ -18,6 +18,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+ITEMS_PER_PAGE_KEY = 2
 
 @app.get("/")
 async def index():
@@ -62,9 +63,9 @@ def show_all_summaries():
 @app.put("/edit_summary")
 async def edit_summary(request: Request):
     with Session() as session:
-        respons = await request.json()
-        summary_name = respons.get('summary_name')
-        content = respons.get('summary')
+        response = await request.json()
+        summary_name = response.get('summary_name')
+        content = response.get('summary')
 
         try:
             session.query(SummaryModel).filter(SummaryModel.title == summary_name).update({"content": content})
@@ -82,8 +83,8 @@ async def edit_summary(request: Request):
 @app.delete("/delete_summary")
 async def delete_summary(request: Request):
     with Session() as session:
-        respons = await request.json()
-        summary_name = respons.get('summary_name')
+        response = await request.json()
+        summary_name = response.get('summary_name')
 
         try:
             session.query(SummaryModel).filter(SummaryModel.title == summary_name).delete()
@@ -94,5 +95,33 @@ async def delete_summary(request: Request):
         except Exception as e:
             session.rollback()
             message = FailMessage(f"failed to delete '{repr(e)}'")
+
+            return json.dumps(message.to_dict)
+
+@app.post("/get_summaries_page")
+async def get_summaies_page(request: Request):
+    with Session() as session:
+        response = await request.json()
+        page_number = response.get("page_number")
+
+        # page_number - 1 because the count starts at 0, but the pages starts at 1.
+        offset = (page_number - 1) * ITEMS_PER_PAGE_KEY
+
+        try:
+            items = session.query(SummaryModel).offset(offset).limit(ITEMS_PER_PAGE_KEY).all()
+            return items
+        except Exception as e:
+            message = FailMessage(f"failed to retrieve summaries '{repr(e)}'")
+            return json.dumps(message.to_dict)
+        
+@app.get("/get_number_of_summaries")
+async def get_number_of_summaries():
+    with Session() as session:
+        try:
+            summary = session.query(SummaryModel).order_by(SummaryModel.id.desc()).first()
+
+            return json.dumps({'id': summary.id})
+        except Exception as e:
+            message = FailMessage(f"failed to retrieve the last summaries '{repr(e)}'")
 
             return json.dumps(message.to_dict)
