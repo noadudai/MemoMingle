@@ -1,6 +1,7 @@
 import json
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import func
 
 from memo_mingle.communication.messages import FailMessage
 from memo_mingle.db.models.summaries_table import SummaryModel
@@ -121,9 +122,9 @@ async def get_summaies_page(request: Request):
 async def get_number_of_summaries():
     with Session() as session:
         try:
-            summary = session.query(SummaryModel).order_by(SummaryModel.id.desc()).first()
+            count = session.query(func.count(SummaryModel.id)).scalar()
 
-            return json.dumps({'id': summary.id})
+            return json.dumps({'count': count})
         except Exception as e:
             message = FailMessage(f"failed to retrieve the last summaries '{repr(e)}'")
 
