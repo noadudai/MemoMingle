@@ -108,6 +108,9 @@ async def get_summaies_page(request: Request):
         offset = (page_number - 1) * ITEMS_PER_PAGE_KEY
 
         try:
+            # When .offset() method applied to an SQLAlchemy query, 
+            # it first retrieves all the instances from the database. Then, 
+            # it skips the first n rows specified by the .offset() method.
             items = session.query(SummaryModel).offset(offset).limit(ITEMS_PER_PAGE_KEY).all()
             return items
         except Exception as e:
