@@ -7,7 +7,7 @@ import SummariesPage from "./SummariesPage";
 // Arrow function assigned to the variable SummariesList.
 const SummariesList = () => {
     // Destructuring the useState's array return value into the first and second elements in the array.
-    const [itemsPerPage] = useState(3);
+    const [itemsPerPage] = useState(2);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalSummaries, setTotalSummaries] = useState(1);
 
@@ -17,7 +17,7 @@ const SummariesList = () => {
         fetch("http://127.0.0.1:8000/get_number_of_summaries")
             .then(response => response.json())
             .then(data => {
-                setTotalSummaries(JSON.parse(data).id)})
+                setTotalSummaries(JSON.parse(data).count)})
             .catch(error => console.error(error));
 
      },[]);
