@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Navbar from "./components/Navbar"
-import Pagination from './components/Pagination';
 import SummariesList from './components/SummariesList';
 
 
@@ -10,7 +9,6 @@ function App(){
             <div className='flex-1'>
                 <Navbar />
                 <SummariesList />
-                {/* <Pagination /> */}
             </div>
         </div>
     )
