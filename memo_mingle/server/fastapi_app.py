@@ -19,7 +19,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-ITEMS_PER_PAGE_KEY = 2
+ITEMS_PER_PAGE_KEY = 10
 
 @app.get("/")
 async def index():
@@ -64,9 +64,9 @@ def show_all_summaries():
 @app.put("/edit_summary")
 async def edit_summary(request: Request):
     with Session() as session:
-        response = await request.json()
-        summary_name = response.get('summary_name')
-        content = response.get('summary')
+        req = await request.json()
+        summary_name = req.get('summary_name')
+        content = req.get('summary')
 
         try:
             session.query(SummaryModel).filter(SummaryModel.title == summary_name).update({"content": content})
@@ -84,8 +84,8 @@ async def edit_summary(request: Request):
 @app.delete("/delete_summary")
 async def delete_summary(request: Request):
     with Session() as session:
-        response = await request.json()
-        summary_name = response.get('summary_name')
+        req = await request.json()
+        summary_name = req.get('summary_name')
 
         try:
             session.query(SummaryModel).filter(SummaryModel.title == summary_name).delete()
@@ -102,8 +102,8 @@ async def delete_summary(request: Request):
 @app.post("/get_summaries_page")
 async def get_summaies_page(request: Request):
     with Session() as session:
-        response = await request.json()
-        page_number = response.get("page_number")
+        req = await request.json()
+        page_number = req.get("page_number")
 
         # page_number - 1 because the count starts at 0, but the pages starts at 1.
         offset = (page_number - 1) * ITEMS_PER_PAGE_KEY
@@ -129,3 +129,21 @@ async def get_number_of_summaries():
             message = FailMessage(f"failed to retrieve the last summaries '{repr(e)}'")
 
             return json.dumps(message.to_dict)
+
+@app.post("/search_title")
+async def search_title(request: Request):
+    with Session() as session:
+        req = await request.json()
+        title_name = req.get("title_name")
+
+        try:
+            summaries = session.query(SummaryModel).filter(SummaryModel.title.like(f"%{title_name}%")).all()
+
+            return_list = [summary for summary in summaries]
+            return_str = str(return_list)
+            return return_str
+        except Exception as e:
+            message = FailMessage(f"failed to retrieve summaries that contine the title {title_name}. '{repr(e)}'")
+
+            return json.dumps(message.to_dict)
+
