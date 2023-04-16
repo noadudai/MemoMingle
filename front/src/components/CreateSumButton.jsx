@@ -20,7 +20,6 @@ const CreateSummaryButton = ({ isOpen, onClose }) => {
         setContent("");
         setTitle("");
         console.log(response.data);
-
     }
 
     if (!isOpen) {
