@@ -1,3 +1,5 @@
+// TODO: Add "Link" to the "home page" and the "search result page".
+
 import React, { useState } from "react";
 
 import CreateSummaryButton from "./CreateSumButton";
