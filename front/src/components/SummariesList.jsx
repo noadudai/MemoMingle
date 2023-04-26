@@ -1,3 +1,8 @@
+// TODO: Change this component to receive the list of the summaries to display.
+// So that I will be able to reuse this component in different "pages" such as "home page" and "search result page".
+
+
+
 /* Destructuring the useState and useEffect from the "react" object into the 
 useState ans useEffect variables. */
 import React, { useState, useEffect } from "react";
