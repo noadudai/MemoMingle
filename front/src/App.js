@@ -3,8 +3,8 @@ import Navbar from "./components/Navbar"
 import SummariesList from './components/SummariesList';
 
 // TODO: Import react-router-dom and all that is necessary for routing.
-// TODO: Change the return statement to support routing to the search result component. 
-// And the "home Page".  
+// TODO: Change the return statement to support routing to the "search result" component. 
+// And the "home Page" whith exact path and not only "path" to ensure that the route matches exactly with the specified path.  
 
 function App(){   
     return (
