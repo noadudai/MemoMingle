@@ -55,7 +55,7 @@ async def create_summary(request: Request):
 @app.get('/show_all_summaries')
 def show_all_summaries():
     with Session() as session:
-        summaries = session.query(SummaryModel).all()
+        summaries = session.query(SummaryModel).order_by(SummaryModel.id).all()
         return_list = [summary for summary in summaries]
         return_str = str(return_list)
         return return_str
